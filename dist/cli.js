@@ -16,25 +16,54 @@ program
 program
     .command("add <n1> <n2>")
     .description("Add two numbers")
-    .action((n1, n2) => console.log(Number(n1) + Number(n2)));
+    .action((n1, n2) => {
+    const num1 = Number(n1);
+    const num2 = Number(n2);
+    if (isNaN(num1) || isNaN(num2)) {
+        console.error("Error: Please provide valid numbers.");
+        return;
+    }
+    console.log(num1 + num2);
+});
 program
     .command("subtract <n1> <n2>")
     .description("Subtract two numbers")
-    .action((n1, n2) => console.log(Number(n1) - Number(n2)));
+    .action((n1, n2) => {
+    const num1 = Number(n1);
+    const num2 = Number(n2);
+    if (isNaN(num1) || isNaN(num2)) {
+        console.error("Error: Please provide valid numbers.");
+        return;
+    }
+    console.log(num1 - num2);
+});
 program
     .command("multiply <n1> <n2>")
     .description("Multiply two numbers")
-    .action((n1, n2) => console.log(Number(n1) * Number(n2)));
+    .action((n1, n2) => {
+    const num1 = Number(n1);
+    const num2 = Number(n2);
+    if (isNaN(num1) || isNaN(num2)) {
+        console.error("Error: Please provide valid numbers.");
+        return;
+    }
+    console.log(num1 * num2);
+});
 program
     .command("divide <n1> <n2>")
     .description("Divide two numbers")
     .action((n1, n2) => {
+    const num1 = Number(n1);
     const num2 = Number(n2);
-    if (num2 === 0) {
-        console.log("Cannot divide by zero");
+    if (isNaN(num1) || isNaN(num2)) {
+        console.error("Error: Please provide valid numbers.");
         return;
     }
-    console.log(Number(n1) / num2);
+    if (num2 === 0) {
+        console.error("Error: Cannot divide by zero.");
+        return;
+    }
+    console.log(num1 / num2);
 });
 program
     .command("weather <city>")
@@ -42,16 +71,26 @@ program
     .action(async (city) => {
     try {
         const response = await fetch(`https://wttr.in/${city}?format=j1`);
+        if (!response.ok) {
+            throw new Error(`Weather service returned ${response.status}`);
+        }
         const data = await response.json();
+        if (!data.current_condition || data.current_condition.length === 0) {
+            console.error("Error: Could not find weather data for that city.");
+            return;
+        }
         const current = data.current_condition[0];
-        console.log(`City: ${city}`);
+        const weatherDesc = current.weatherDesc?.[0]?.value || "No description available";
+        console.log(`\nWeather for ${city}:`);
+        console.log(`-----------------------------`);
         console.log(`Temperature: ${current.temp_C}°C`);
-        console.log(`Condition: ${current.weatherDesc[0].value}`);
-        console.log(`Humidity: ${current.humidity}%`);
-        console.log(`Wind Speed: ${current.windspeedKmph} km/h`);
+        console.log(`Condition:   ${weatherDesc}`);
+        console.log(`Humidity:    ${current.humidity}%`);
+        console.log(`Wind Speed:  ${current.windspeedKmph} km/h`);
+        console.log(`-----------------------------\n`);
     }
     catch (error) {
-        console.log("Failed to fetch weather data");
+        console.error("Error: Failed to fetch weather data. Check your connection or city name.");
     }
 });
 program.parse();

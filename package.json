@@ -1,8 +1,10 @@
 {
   "name": "my_command",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/cli.js",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,7 +19,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
-  "bin":{
-    "mycli":"./dist/cli.js"
+  "bin": {
+    "mycli": "./dist/cli.js"
   }
 }
